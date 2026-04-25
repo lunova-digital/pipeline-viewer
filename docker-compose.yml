@@ -25,7 +25,7 @@ services:
       PORT: 3000
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/stationmap
       ADMIN_KEY: ${ADMIN_KEY:-changeme-secret-key}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
     depends_on:
       db:
         condition: service_healthy
