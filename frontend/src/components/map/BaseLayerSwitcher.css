@@ -1,0 +1,32 @@
+.layer-switcher {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+}
+
+.layer-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.layer-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.layer-btn.active {
+  background: var(--accent);
+  color: #fff;
+}

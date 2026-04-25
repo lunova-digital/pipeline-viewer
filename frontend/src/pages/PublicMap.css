@@ -1,0 +1,92 @@
+.public-map {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.map-brand {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+  padding: 8px 14px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.map-brand:hover {
+  background: var(--bg-hover);
+}
+
+.brand-text {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .brand-text { display: inline; }
+}
+
+/* Remove ugly blue focus outline on clicked SVG paths */
+path.leaflet-interactive:focus {
+  outline: none !important;
+}
+
+/* Top-right controls group: layer switcher + label toggle */
+.map-controls-top-right {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* Permanent pipeline label tooltips */
+.leaflet-tooltip.pipeline-label {
+  background: rgba(22, 27, 34, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  color: #e6edf3;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 7px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.leaflet-tooltip.pipeline-label::before {
+  display: none;
+}
+
+/* Permanent station label tooltips */
+.leaflet-tooltip.station-label {
+  background: rgba(22, 27, 34, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  color: #e6edf3;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 7px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.leaflet-tooltip.station-label::before {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
