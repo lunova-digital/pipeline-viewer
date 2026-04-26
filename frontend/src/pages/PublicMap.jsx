@@ -89,19 +89,26 @@ export default function PublicMap() {
   const sharedLng  = urlParams.current.get('lng')
   const sharedZoom = urlParams.current.get('zoom')
 
-  useEffect(() => {
-    fetch(`${API_BASE}/meta`)
+  function fetchMeta() {
+    return fetch(`${API_BASE}/meta`)
       .then(res => res.json())
       .then(data => {
         setMetaOptions(data)
-        setFilters({
-          categories:    data.categories.map(c => c.id),
-          statuses:      data.statuses.map(s => s.id),
-          station_types: data.station_types ? data.station_types.map(t => t.id) : []
+        setFilters(prev => {
+          // Only reset filters on first load (when they're still empty)
+          if (prev.categories.length > 0) return prev
+          return {
+            categories:    data.categories.map(c => c.id),
+            statuses:      data.statuses.map(s => s.id),
+            station_types: data.station_types ? data.station_types.map(t => t.id) : []
+          }
         })
+        return data
       })
       .catch(err => console.error('Failed to fetch meta options:', err))
-  }, [])
+  }
+
+  useEffect(() => { fetchMeta() }, [])
 
   useEffect(() => { writeStorage('map_layer', activeLayer) }, [activeLayer])
   useEffect(() => { writeStorage('map_labels', showLabels) }, [showLabels])
@@ -177,14 +184,16 @@ export default function PublicMap() {
     setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedStation(null)
     setSelectedPipeline(props)
-  }, [])
+    fetchMeta()
+  }, []) // eslint-disable-line
 
   const handleStationClick = useCallback(props => {
     featureClickedRef.current = true
     setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedPipeline(null)
     setSelectedStation(props)
-  }, [])
+    fetchMeta()
+  }, []) // eslint-disable-line
 
   const handleClose = useCallback(() => {
     setSelectedPipeline(null)
@@ -241,7 +250,11 @@ export default function PublicMap() {
         <TileLayer key={activeLayer} url={tile.url} attribution={tile.attribution} maxZoom={tile.maxZoom} />
         <PipelineLayer filters={filters} onSelect={handlePipelineClick} showLabels={showLabels} />
         <StationLayer filters={filters} metaOptions={metaOptions} onSelect={handleStationClick} showLabels={showLabels} />
-        <CoordinatePopup featureClickedRef={featureClickedRef} onToast={showToast} />
+        <CoordinatePopup
+          featureClickedRef={featureClickedRef}
+          onToast={showToast}
+          initialPos={(sharedLat && sharedLng) ? { lat: parseFloat(sharedLat), lng: parseFloat(sharedLng) } : null}
+        />
       </MapContainer>
     </div>
   )

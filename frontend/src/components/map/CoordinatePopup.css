@@ -1,3 +1,7 @@
+.coord-pin-icon {
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+}
+
 .coord-popup-container .leaflet-popup-content {
   margin: 14px 16px;
 }
