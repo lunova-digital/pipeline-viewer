@@ -5,10 +5,22 @@ import 'leaflet.markercluster'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
 
+function getContrastColor(hexColor) {
+  if (!hexColor) return '#ffffff'
+  let hex = hexColor.replace('#', '')
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
+  return (yiq >= 128) ? '#000000' : '#ffffff'
+}
+
 function makeStationIcon(props, metaOptions) {
   const metaType = metaOptions.station_types?.find(t => t.id === props.type)
   const metaCategory = metaOptions.station_categories?.find(c => c.id === props.category)
   const color = metaCategory ? metaCategory.color : '#888888'
+  const fontColor = getContrastColor(color)
   const letter = metaType && metaType.label ? metaType.label.charAt(0).toUpperCase() : 'O'
   
   return L.divIcon({
@@ -17,7 +29,7 @@ function makeStationIcon(props, metaOptions) {
       width:28px;height:28px;border-radius:50%;
       background:${color};border:2px solid rgba(255,255,255,0.8);
       display:flex;align-items:center;justify-content:center;
-      font-size:11px;font-weight:700;color:#fff;
+      font-size:11px;font-weight:700;color:${fontColor};
       box-shadow:0 2px 6px rgba(0,0,0,0.5);
     ">${letter}</div>`,
     iconSize: [28, 28],

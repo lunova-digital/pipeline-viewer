@@ -2,17 +2,25 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api/client'
 
-const TYPE_COLORS = {
-  compressor: '#FF6600', terminal: '#0099FF', valve: '#00BB44',
-  metering: '#AA00FF', other: '#888888'
-}
-
 export default function StationList() {
   const [stations, setStations] = useState([])
+  const [categories, setCategories] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.get('/admin/stations').then(r => setStations(r.data)).finally(() => setLoading(false))
+    Promise.all([
+      api.get('/admin/stations'),
+      api.get('/meta')
+    ]).then(([stationsRes, metaRes]) => {
+      setStations(stationsRes.data)
+      const catMap = {}
+      if (metaRes.data && metaRes.data.station_categories) {
+        metaRes.data.station_categories.forEach(c => {
+          catMap[c.id] = c.color
+        })
+      }
+      setCategories(catMap)
+    }).finally(() => setLoading(false))
   }, [])
 
   async function handleDelete(id, name) {
@@ -53,7 +61,7 @@ export default function StationList() {
             {stations.map(s => (
               <tr key={s.id}>
                 <td>
-                  <span className="color-dot" style={{ background: TYPE_COLORS[s.type] || '#888' }} />
+                  <span className="color-dot" style={{ background: categories[s.category] || '#888' }} />
                   {s.name}
                 </td>
                 <td style={{ textTransform: 'capitalize' }}>{s.type}</td>
