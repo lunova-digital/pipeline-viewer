@@ -93,7 +93,7 @@ export default function StationLayer({ filters, metaOptions, onSelect, showLabel
             marker.bindTooltip(tooltipContent, { direction: 'top', offset: [0, -14] })
           }
 
-          marker.on('click', () => onSelectRef.current({ ...props, _type: 'station' }))
+          marker.on('click', (e) => onSelectRef.current({ ...props, _type: 'station' }, e.latlng))
           clusterRef.current.addLayer(marker)
           markersRef.current.push({ marker, tooltipContent })
         })

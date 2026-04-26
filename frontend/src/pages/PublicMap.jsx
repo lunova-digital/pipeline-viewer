@@ -177,21 +177,28 @@ export default function PublicMap() {
     copyToClipboard(url).then(() => showToast('Station link copied to clipboard'))
   }
 
+  function handleSharePoint(latlng) {
+    if (!latlng || !mapInstance) return
+    const zoom = Math.round(mapInstance.getZoom())
+    const url = `${window.location.origin}/?lat=${latlng.lat.toFixed(6)}&lng=${latlng.lng.toFixed(6)}&zoom=${zoom}`
+    copyToClipboard(url).then(() => showToast('Point link copied to clipboard'))
+  }
+
   const tile = TILES[activeLayer]
 
-  const handlePipelineClick = useCallback(props => {
+  const handlePipelineClick = useCallback((props, latlng) => {
     featureClickedRef.current = true
     setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedStation(null)
-    setSelectedPipeline(props)
+    setSelectedPipeline({ ...props, _clickedAt: latlng })
     fetchMeta()
   }, []) // eslint-disable-line
 
-  const handleStationClick = useCallback(props => {
+  const handleStationClick = useCallback((props, latlng) => {
     featureClickedRef.current = true
     setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedPipeline(null)
-    setSelectedStation(props)
+    setSelectedStation({ ...props, _clickedAt: latlng })
     fetchMeta()
   }, []) // eslint-disable-line
 
@@ -234,6 +241,9 @@ export default function PublicMap() {
             ? () => handleSharePipeline(selectedPipeline.id)
             : () => handleShareStation(selectedStation.id)
           }
+          onSharePoint={() => handleSharePoint(
+            selectedPipeline?._clickedAt || selectedStation?._clickedAt
+          )}
         />
       )}
 

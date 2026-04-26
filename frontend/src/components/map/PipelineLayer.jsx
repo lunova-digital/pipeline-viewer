@@ -88,7 +88,7 @@ export default function PipelineLayer({ filters, onSelect, showLabels }) {
             // Tooltip bound to the hit layer for hover feedback
             layer.bindTooltip(name, { sticky: true, direction: 'top' })
 
-            layer.on('click', () => onSelectRef.current(feature.properties))
+            layer.on('click', (e) => onSelectRef.current(feature.properties, e.latlng))
 
             // On hover: highlight the *visible* layer beneath
             layer.on('mouseover', () => {

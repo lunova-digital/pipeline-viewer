@@ -7,7 +7,7 @@ const STATUS_COLORS = {
   decommissioned:    '#f85149'
 }
 
-export default function DetailPanel({ pipeline, station, onClose, onShare, metaOptions }) {
+export default function DetailPanel({ pipeline, station, onClose, onShare, onSharePoint, metaOptions }) {
   const data = pipeline || station
   if (!data) return null
 
@@ -129,6 +129,28 @@ export default function DetailPanel({ pipeline, station, onClose, onShare, metaO
               </div>
             )}
           </>
+        )}
+        {data._clickedAt && (
+          <div className="detail-coord-section">
+            <div className="detail-coord-header">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              Clicked Point
+            </div>
+            <div className="detail-coord-row">
+              <span className="detail-coord-value">
+                {data._clickedAt.lat.toFixed(6)}, {data._clickedAt.lng.toFixed(6)}
+              </span>
+              <button className="detail-coord-share-btn" onClick={onSharePoint} title="Share this point">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Share point
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
