@@ -19,7 +19,7 @@ function getContrastColor(hexColor) {
 function makeStationIcon(props, metaOptions) {
   const metaType = metaOptions.station_types?.find(t => t.id === props.type)
   const metaCategory = metaOptions.station_categories?.find(c => c.id === props.category)
-  const color = metaCategory ? metaCategory.color : '#888888'
+  const color = metaCategory?.color || metaType?.color || '#888888'
   const fontColor = getContrastColor(color)
   const letter = metaType && metaType.label ? metaType.label.charAt(0).toUpperCase() : 'O'
   

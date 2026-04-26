@@ -5,6 +5,7 @@ import { api } from '../../api/client'
 export default function StationList() {
   const [stations, setStations] = useState([])
   const [categories, setCategories] = useState({})
+  const [types, setTypes] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -14,12 +15,19 @@ export default function StationList() {
     ]).then(([stationsRes, metaRes]) => {
       setStations(stationsRes.data)
       const catMap = {}
+      const typeMap = {}
       if (metaRes.data && metaRes.data.station_categories) {
         metaRes.data.station_categories.forEach(c => {
           catMap[c.id] = c.color
         })
       }
+      if (metaRes.data && metaRes.data.station_types) {
+        metaRes.data.station_types.forEach(t => {
+          typeMap[t.id] = t.color
+        })
+      }
       setCategories(catMap)
+      setTypes(typeMap)
     }).finally(() => setLoading(false))
   }, [])
 
@@ -60,8 +68,8 @@ export default function StationList() {
           <tbody>
             {stations.map(s => (
               <tr key={s.id}>
-                <td>
-                  <span className="color-dot" style={{ background: categories[s.category] || '#888' }} />
+                 <td>
+                  <span className="color-dot" style={{ background: categories[s.category] || types[s.type] || '#888' }} />
                   {s.name}
                 </td>
                 <td style={{ textTransform: 'capitalize' }}>{s.type}</td>
