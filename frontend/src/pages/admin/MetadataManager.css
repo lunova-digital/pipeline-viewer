@@ -148,6 +148,21 @@
   flex-shrink: 0;
 }
 
+.meta-edit-fields {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-edit-id {
+  width: 90px;
+  flex: 0 0 90px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 .site-settings-card {
   background: #161b22;
   border: 1px solid #30363d;

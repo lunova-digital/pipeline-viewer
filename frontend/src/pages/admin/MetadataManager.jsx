@@ -75,7 +75,7 @@ export default function MetadataManager() {
 
   async function handleSaveCategory(id) {
     try {
-      await api.put(`/admin/meta/categories/${id}`, { label: editingCat.label, color: editingCat.color })
+      await api.put(`/admin/meta/categories/${id}`, { id: editingCat.newId, label: editingCat.label, color: editingCat.color })
       setEditingCat(null)
       fetchMeta()
     } catch (err) {
@@ -106,7 +106,7 @@ export default function MetadataManager() {
 
   async function handleSaveStatus(id) {
     try {
-      await api.put(`/admin/meta/statuses/${id}`, { label: editingStat.label })
+      await api.put(`/admin/meta/statuses/${id}`, { id: editingStat.newId, label: editingStat.label })
       setEditingStat(null)
       fetchMeta()
     } catch (err) {
@@ -137,7 +137,7 @@ export default function MetadataManager() {
 
   async function handleSaveStationType(id) {
     try {
-      await api.put(`/admin/meta/station_types/${id}`, { label: editingType.label, color: editingType.color })
+      await api.put(`/admin/meta/station_types/${id}`, { id: editingType.newId, label: editingType.label, color: editingType.color })
       setEditingType(null)
       fetchMeta()
     } catch (err) {
@@ -221,9 +221,14 @@ export default function MetadataManager() {
             {meta.categories.map(c => (
               editingCat?.id === c.id ? (
                 <div key={c.id} className="meta-item meta-item-editing">
-                  <input className="meta-edit-input" value={editingCat.label} autoFocus
-                    onChange={e => setEditingCat(v => ({ ...v, label: e.target.value }))}
-                    onKeyDown={e => e.key === 'Escape' && setEditingCat(null)} />
+                  <div className="meta-edit-fields">
+                    <input className="meta-edit-input meta-edit-id" value={editingCat.newId} placeholder="id"
+                      onChange={e => setEditingCat(v => ({ ...v, newId: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingCat(null)} />
+                    <input className="meta-edit-input" value={editingCat.label} placeholder="Label" autoFocus
+                      onChange={e => setEditingCat(v => ({ ...v, label: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingCat(null)} />
+                  </div>
                   <input type="color" value={editingCat.color}
                     onChange={e => setEditingCat(v => ({ ...v, color: e.target.value }))}
                     style={{ width: 36, height: 36, padding: 2, cursor: 'pointer', border: '1px solid var(--border-solid)', borderRadius: 4, background: 'none', flexShrink: 0 }} />
@@ -240,7 +245,7 @@ export default function MetadataManager() {
                     <span className="meta-item-id">{c.id}</span>
                   </div>
                   <div className="meta-item-actions">
-                    <button className="btn-edit-sm" onClick={() => setEditingCat({ id: c.id, label: c.label, color: c.color })}>Edit</button>
+                    <button className="btn-edit-sm" onClick={() => setEditingCat({ id: c.id, newId: c.id, label: c.label, color: c.color })}>Edit</button>
                     <button className="btn-danger-sm" onClick={() => handleDeleteCategory(c.id)}>Delete</button>
                   </div>
                 </div>
@@ -269,9 +274,14 @@ export default function MetadataManager() {
             {meta.statuses.map(s => (
               editingStat?.id === s.id ? (
                 <div key={s.id} className="meta-item meta-item-editing">
-                  <input className="meta-edit-input" value={editingStat.label} autoFocus
-                    onChange={e => setEditingStat(v => ({ ...v, label: e.target.value }))}
-                    onKeyDown={e => e.key === 'Escape' && setEditingStat(null)} />
+                  <div className="meta-edit-fields">
+                    <input className="meta-edit-input meta-edit-id" value={editingStat.newId} placeholder="id"
+                      onChange={e => setEditingStat(v => ({ ...v, newId: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingStat(null)} />
+                    <input className="meta-edit-input" value={editingStat.label} placeholder="Label" autoFocus
+                      onChange={e => setEditingStat(v => ({ ...v, label: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingStat(null)} />
+                  </div>
                   <div className="meta-edit-actions">
                     <button className="btn btn-primary btn-sm" onClick={() => handleSaveStatus(s.id)}>Save</button>
                     <button className="btn btn-secondary btn-sm" onClick={() => setEditingStat(null)}>✕</button>
@@ -284,7 +294,7 @@ export default function MetadataManager() {
                     <span className="meta-item-id">{s.id}</span>
                   </div>
                   <div className="meta-item-actions">
-                    <button className="btn-edit-sm" onClick={() => setEditingStat({ id: s.id, label: s.label })}>Edit</button>
+                    <button className="btn-edit-sm" onClick={() => setEditingStat({ id: s.id, newId: s.id, label: s.label })}>Edit</button>
                     <button className="btn-danger-sm" onClick={() => handleDeleteStatus(s.id)}>Delete</button>
                   </div>
                 </div>
@@ -318,9 +328,14 @@ export default function MetadataManager() {
             {(meta.station_types || []).map(t => (
               editingType?.id === t.id ? (
                 <div key={t.id} className="meta-item meta-item-editing">
-                  <input className="meta-edit-input" value={editingType.label} autoFocus
-                    onChange={e => setEditingType(v => ({ ...v, label: e.target.value }))}
-                    onKeyDown={e => e.key === 'Escape' && setEditingType(null)} />
+                  <div className="meta-edit-fields">
+                    <input className="meta-edit-input meta-edit-id" value={editingType.newId} placeholder="id"
+                      onChange={e => setEditingType(v => ({ ...v, newId: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingType(null)} />
+                    <input className="meta-edit-input" value={editingType.label} placeholder="Label" autoFocus
+                      onChange={e => setEditingType(v => ({ ...v, label: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingType(null)} />
+                  </div>
                   <input type="color" value={editingType.color}
                     onChange={e => setEditingType(v => ({ ...v, color: e.target.value }))}
                     style={{ width: 36, height: 36, padding: 2, cursor: 'pointer', border: '1px solid var(--border-solid)', borderRadius: 4, background: 'none', flexShrink: 0 }} />
@@ -337,7 +352,7 @@ export default function MetadataManager() {
                     <span className="meta-item-id">{t.id}</span>
                   </div>
                   <div className="meta-item-actions">
-                    <button className="btn-edit-sm" onClick={() => setEditingType({ id: t.id, label: t.label, color: t.color })}>Edit</button>
+                    <button className="btn-edit-sm" onClick={() => setEditingType({ id: t.id, newId: t.id, label: t.label, color: t.color })}>Edit</button>
                     <button className="btn-danger-sm" onClick={() => handleDeleteStationType(t.id)}>Delete</button>
                   </div>
                 </div>

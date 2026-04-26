@@ -21,18 +21,30 @@ router.post('/categories', async (req, res) => {
 
 // PUT /api/v1/admin/meta/categories/:id
 router.put('/categories/:id', async (req, res) => {
+  const client = await pool.connect()
   try {
-    const { label, color } = req.body
-    if (!label || !color) return res.status(400).json({ error: 'Missing label or color' })
-    const result = await pool.query(
-      'UPDATE categories SET label = $1, color = $2 WHERE id = $3 RETURNING id',
-      [label, color, req.params.id]
+    const oldId = req.params.id
+    const { id: newId = oldId, label, color } = req.body
+    if (!newId || !label || !color) return res.status(400).json({ error: 'Missing required fields' })
+
+    await client.query('BEGIN')
+    if (newId !== oldId) {
+      await client.query('UPDATE pipelines SET category = $1 WHERE category = $2', [newId, oldId])
+    }
+    const result = await client.query(
+      'UPDATE categories SET id = $1, label = $2, color = $3 WHERE id = $4 RETURNING id',
+      [newId, label, color, oldId]
     )
-    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
-    res.json({ success: true })
+    if (!result.rows.length) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Not found' }) }
+    await client.query('COMMIT')
+    res.json({ success: true, id: newId })
   } catch (err) {
+    await client.query('ROLLBACK')
+    if (err.code === '23505') return res.status(400).json({ error: 'ID already exists' })
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    client.release()
   }
 })
 
@@ -66,18 +78,30 @@ router.post('/statuses', async (req, res) => {
 
 // PUT /api/v1/admin/meta/statuses/:id
 router.put('/statuses/:id', async (req, res) => {
+  const client = await pool.connect()
   try {
-    const { label } = req.body
-    if (!label) return res.status(400).json({ error: 'Missing label' })
-    const result = await pool.query(
-      'UPDATE statuses SET label = $1 WHERE id = $2 RETURNING id',
-      [label, req.params.id]
+    const oldId = req.params.id
+    const { id: newId = oldId, label } = req.body
+    if (!newId || !label) return res.status(400).json({ error: 'Missing required fields' })
+
+    await client.query('BEGIN')
+    if (newId !== oldId) {
+      await client.query('UPDATE pipelines SET status = $1 WHERE status = $2', [newId, oldId])
+    }
+    const result = await client.query(
+      'UPDATE statuses SET id = $1, label = $2 WHERE id = $3 RETURNING id',
+      [newId, label, oldId]
     )
-    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
-    res.json({ success: true })
+    if (!result.rows.length) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Not found' }) }
+    await client.query('COMMIT')
+    res.json({ success: true, id: newId })
   } catch (err) {
+    await client.query('ROLLBACK')
+    if (err.code === '23505') return res.status(400).json({ error: 'ID already exists' })
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    client.release()
   }
 })
 
@@ -111,18 +135,30 @@ router.post('/station_types', async (req, res) => {
 
 // PUT /api/v1/admin/meta/station_types/:id
 router.put('/station_types/:id', async (req, res) => {
+  const client = await pool.connect()
   try {
-    const { label, color } = req.body
-    if (!label || !color) return res.status(400).json({ error: 'Missing label or color' })
-    const result = await pool.query(
-      'UPDATE station_types SET label = $1, color = $2 WHERE id = $3 RETURNING id',
-      [label, color, req.params.id]
+    const oldId = req.params.id
+    const { id: newId = oldId, label, color } = req.body
+    if (!newId || !label || !color) return res.status(400).json({ error: 'Missing required fields' })
+
+    await client.query('BEGIN')
+    if (newId !== oldId) {
+      await client.query('UPDATE stations SET type = $1 WHERE type = $2', [newId, oldId])
+    }
+    const result = await client.query(
+      'UPDATE station_types SET id = $1, label = $2, color = $3 WHERE id = $4 RETURNING id',
+      [newId, label, color, oldId]
     )
-    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
-    res.json({ success: true })
+    if (!result.rows.length) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Not found' }) }
+    await client.query('COMMIT')
+    res.json({ success: true, id: newId })
   } catch (err) {
+    await client.query('ROLLBACK')
+    if (err.code === '23505') return res.status(400).json({ error: 'ID already exists' })
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    client.release()
   }
 })
 
