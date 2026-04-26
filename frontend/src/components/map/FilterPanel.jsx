@@ -3,7 +3,7 @@ import './FilterPanel.css'
 
 export default function FilterPanel({ filters, onChange, metaOptions }) {
   const { categories = [], statuses = [], station_types = [] } = metaOptions || {}
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(() => window.innerWidth > 640)
 
   function toggleCategory(id) {
     const cats = filters.categories.includes(id)

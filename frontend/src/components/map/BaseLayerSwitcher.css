@@ -19,6 +19,11 @@
   background: transparent;
   color: var(--text-secondary);
   transition: all 0.15s;
+  min-height: 34px;
+}
+
+@media (max-width: 640px) {
+  .layer-btn { padding: 6px 8px; font-size: 11px; }
 }
 
 .layer-btn:hover {

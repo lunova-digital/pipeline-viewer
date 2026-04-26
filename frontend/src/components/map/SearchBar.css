@@ -7,6 +7,16 @@
   width: 340px;
 }
 
+@media (max-width: 640px) {
+  .search-bar {
+    top: 62px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    transform: none;
+  }
+}
+
 .search-input-wrap {
   display: flex;
   align-items: center;

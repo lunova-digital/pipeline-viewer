@@ -130,6 +130,11 @@
   margin-bottom: 20px;
 }
 
+@media (max-width: 640px) {
+  .settings-fields { grid-template-columns: 1fr; }
+  .metadata-grid { grid-template-columns: 1fr; }
+}
+
 .settings-full-width {
   grid-column: 1 / -1;
 }

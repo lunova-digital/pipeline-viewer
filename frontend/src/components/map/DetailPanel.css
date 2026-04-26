@@ -18,6 +18,30 @@
   to   { transform: translateX(0) }
 }
 
+@media (max-width: 640px) {
+  .detail-panel {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.25s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%) }
+    to   { transform: translateY(0) }
+  }
+
+  .detail-name { font-size: 17px; max-width: 80%; }
+  .detail-close { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+}
+
 .detail-header {
   display: flex;
   align-items: flex-start;

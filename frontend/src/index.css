@@ -31,12 +31,12 @@ body {
   color: var(--text-primary);
   font-size: 14px;
   line-height: 1.5;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
 #root {
-  height: 100vh;
+  height: 100dvh;
 }
 
 /* ── Leaflet overrides ───────────────────────────── */
@@ -155,10 +155,11 @@ input, select, textarea {
   border-radius: var(--radius);
   color: var(--text-primary);
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: 16px; /* prevents iOS zoom on focus */
   font-family: inherit;
   width: 100%;
   transition: border-color 0.15s;
+  min-height: 44px;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -192,6 +193,10 @@ label {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
 }
 
 .error-msg {
