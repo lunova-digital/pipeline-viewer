@@ -77,6 +77,7 @@ export default function PublicMap() {
   const [selectedPipeline, setSelectedPipeline] = useState(null)
   const [selectedStation, setSelectedStation] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
+  const [pinnedCoord, setPinnedCoord] = useState(null)
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
   const featureClickedRef = useRef(false)
@@ -214,7 +215,10 @@ export default function PublicMap() {
         <span className="brand-text">Station Map</span>
       </a>
 
-      <SearchBar map={mapInstance} />
+      <SearchBar
+        map={mapInstance}
+        onCoordinate={coord => setPinnedCoord({ ...coord, _ts: Date.now() })}
+      />
 
       <div className="map-controls-top-right">
         <BaseLayerSwitcher active={activeLayer} onChange={setActiveLayer} />
@@ -264,6 +268,7 @@ export default function PublicMap() {
           featureClickedRef={featureClickedRef}
           onToast={showToast}
           initialPos={(sharedLat && sharedLng) ? { lat: parseFloat(sharedLat), lng: parseFloat(sharedLng) } : null}
+          pinnedPos={pinnedCoord}
         />
       </MapContainer>
     </div>

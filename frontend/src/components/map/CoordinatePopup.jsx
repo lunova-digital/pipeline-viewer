@@ -32,10 +32,15 @@ function copyText(text) {
   return Promise.resolve()
 }
 
-export default function CoordinatePopup({ featureClickedRef, onToast, initialPos }) {
+export default function CoordinatePopup({ featureClickedRef, onToast, initialPos, pinnedPos }) {
   const [pos, setPos] = useState(initialPos ? L.latLng(initialPos.lat, initialPos.lng) : null)
   const markerRef = useRef(null)
   const map = useMap()
+
+  // Allow external callers (e.g. SearchBar) to pin a coordinate
+  useEffect(() => {
+    if (pinnedPos) setPos(L.latLng(pinnedPos.lat, pinnedPos.lng))
+  }, [pinnedPos])
 
   // Auto-open popup when marker renders (for both initial and clicked pins)
   useEffect(() => {

@@ -64,6 +64,26 @@ router.get('/', async (req, res) => {
   }
 })
 
+// GET /api/v1/stations/search?q=...
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query
+    if (!q) return res.json([])
+    const result = await pool.query(
+      `SELECT s.id, s.name, s.type,
+              ST_Y(s.geometry) as lat, ST_X(s.geometry) as lng
+       FROM stations s
+       WHERE s.name ILIKE $1
+       LIMIT 8`,
+      [`%${q}%`]
+    )
+    res.json(result.rows)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 // GET /api/v1/stations/:id
 router.get('/:id', async (req, res) => {
   try {
