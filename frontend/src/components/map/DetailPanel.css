@@ -36,7 +36,7 @@
 }
 
 .detail-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
@@ -86,7 +86,7 @@
 }
 
 .detail-key {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -95,7 +95,7 @@
 }
 
 .detail-val {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-primary);
   text-align: right;
   font-weight: 500;
@@ -112,8 +112,8 @@
 
 .detail-description p {
   margin-top: 6px;
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-size: 14px;
+  color: var(--text-primary);
   line-height: 1.6;
   white-space: pre-wrap;
 }
