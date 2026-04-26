@@ -1,25 +1,36 @@
 import './DetailPanel.css'
 
-const STATUS_LABELS = {
-  operational: { label: 'Operational', color: '#3fb950' },
-  planned: { label: 'Planned', color: '#d29922' },
-  under_construction: { label: 'Under Construction', color: '#FF9900' },
-  decommissioned: { label: 'Decommissioned', color: '#f85149' }
+const STATUS_COLORS = {
+  operational:       '#3fb950',
+  planned:           '#d29922',
+  under_construction:'#FF9900',
+  decommissioned:    '#f85149'
 }
 
-const STATION_TYPES = {
-  compressor: 'Compressor Station',
-  terminal: 'Terminal',
-  valve: 'Valve Station',
-  metering: 'Metering Station',
-  other: 'Other'
-}
-
-export default function DetailPanel({ pipeline, station, onClose, onShare }) {
+export default function DetailPanel({ pipeline, station, onClose, onShare, metaOptions }) {
   const data = pipeline || station
   if (!data) return null
 
   const isPipeline = !!pipeline
+
+  const stationTypes  = metaOptions?.station_types || []
+  const statuses      = metaOptions?.statuses      || []
+  const categories    = metaOptions?.categories    || []
+
+  function resolveStationType(id) {
+    const found = stationTypes.find(t => t.id === id)
+    return found ? found.label : (id || 'Station')
+  }
+
+  function resolveStatus(id) {
+    const found = statuses.find(s => s.id === id)
+    return found ? found.label : (id || '')
+  }
+
+  function resolveCategory(id) {
+    const found = categories.find(c => c.id === id)
+    return found ? found.label : (id || '')
+  }
 
   function handleDownload() {
     if (!isPipeline) return
@@ -30,7 +41,9 @@ export default function DetailPanel({ pipeline, station, onClose, onShare }) {
     <div className="detail-panel">
       <div className="detail-header">
         <div>
-          <div className="detail-type">{isPipeline ? 'Pipeline' : STATION_TYPES[data.type] || 'Station'}</div>
+          <div className="detail-type">
+            {isPipeline ? 'Pipeline' : resolveStationType(data.type)}
+          </div>
           <h2 className="detail-name">{data.name}</h2>
         </div>
         <div className="detail-header-actions">
@@ -53,14 +66,14 @@ export default function DetailPanel({ pipeline, station, onClose, onShare }) {
 
             <div className="detail-row">
               <span className="detail-key">Category</span>
-              <span className="detail-val" style={{ textTransform: 'capitalize' }}>{data.category}</span>
+              <span className="detail-val">{resolveCategory(data.category)}</span>
             </div>
 
             {data.status && (
               <div className="detail-row">
                 <span className="detail-key">Status</span>
-                <span className="detail-badge" style={{ color: STATUS_LABELS[data.status]?.color }}>
-                  {STATUS_LABELS[data.status]?.label || data.status}
+                <span className="detail-badge" style={{ color: STATUS_COLORS[data.status] || 'inherit' }}>
+                  {resolveStatus(data.status)}
                 </span>
               </div>
             )}
@@ -96,7 +109,7 @@ export default function DetailPanel({ pipeline, station, onClose, onShare }) {
           <>
             <div className="detail-row">
               <span className="detail-key">Type</span>
-              <span className="detail-val">{STATION_TYPES[data.type] || data.type}</span>
+              <span className="detail-val">{resolveStationType(data.type)}</span>
             </div>
 
             {data.pipeline_name && (

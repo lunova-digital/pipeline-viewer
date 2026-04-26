@@ -8,6 +8,7 @@ import DetailPanel from '../components/map/DetailPanel'
 import Legend from '../components/map/Legend'
 import SearchBar from '../components/map/SearchBar'
 import LabelToggle from '../components/map/LabelToggle'
+import CoordinatePopup from '../components/map/CoordinatePopup'
 import './PublicMap.css'
 
 const TILES = {
@@ -78,6 +79,7 @@ export default function PublicMap() {
   const [mapInstance, setMapInstance] = useState(null)
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
+  const featureClickedRef = useRef(false)
 
   // Parse sharing URL params once on mount
   const urlParams = useRef(new URLSearchParams(window.location.search))
@@ -171,11 +173,15 @@ export default function PublicMap() {
   const tile = TILES[activeLayer]
 
   const handlePipelineClick = useCallback(props => {
+    featureClickedRef.current = true
+    setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedStation(null)
     setSelectedPipeline(props)
   }, [])
 
   const handleStationClick = useCallback(props => {
+    featureClickedRef.current = true
+    setTimeout(() => { featureClickedRef.current = false }, 100)
     setSelectedPipeline(null)
     setSelectedStation(props)
   }, [])
@@ -214,6 +220,7 @@ export default function PublicMap() {
           pipeline={selectedPipeline}
           station={selectedStation}
           onClose={handleClose}
+          metaOptions={metaOptions}
           onShare={selectedPipeline
             ? () => handleSharePipeline(selectedPipeline.id)
             : () => handleShareStation(selectedStation.id)
@@ -234,6 +241,7 @@ export default function PublicMap() {
         <TileLayer key={activeLayer} url={tile.url} attribution={tile.attribution} maxZoom={tile.maxZoom} />
         <PipelineLayer filters={filters} onSelect={handlePipelineClick} showLabels={showLabels} />
         <StationLayer filters={filters} metaOptions={metaOptions} onSelect={handleStationClick} showLabels={showLabels} />
+        <CoordinatePopup featureClickedRef={featureClickedRef} onToast={showToast} />
       </MapContainer>
     </div>
   )

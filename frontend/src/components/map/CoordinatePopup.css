@@ -1,0 +1,62 @@
+.coord-popup-container .leaflet-popup-content {
+  margin: 14px 16px;
+}
+
+.coord-popup {
+  min-width: 190px;
+}
+
+.coord-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #6e7681;
+  margin-bottom: 6px;
+}
+
+.coord-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e6edf3;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.coord-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.coord-btn {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: transparent;
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.coord-btn:hover {
+  color: #e6edf3;
+  background: rgba(30, 37, 48, 0.95);
+}
+
+.coord-btn-primary {
+  background: rgba(255, 102, 0, 0.15);
+  border-color: rgba(255, 102, 0, 0.4);
+  color: #FF6600;
+}
+
+.coord-btn-primary:hover {
+  background: rgba(255, 102, 0, 0.28);
+  color: #FF6600;
+}
