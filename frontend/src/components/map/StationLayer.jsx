@@ -5,9 +5,10 @@ import 'leaflet.markercluster'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
 
-function makeStationIcon(typeId, metaTypes) {
-  const metaType = metaTypes.find(t => t.id === typeId)
-  const color = metaType ? metaType.color : '#888888'
+function makeStationIcon(props, metaOptions) {
+  const metaType = metaOptions.station_types?.find(t => t.id === props.type)
+  const metaCategory = metaOptions.station_categories?.find(c => c.id === props.category)
+  const color = metaCategory ? metaCategory.color : '#888888'
   const letter = metaType && metaType.label ? metaType.label.charAt(0).toUpperCase() : 'O'
   
   return L.divIcon({
@@ -82,7 +83,7 @@ export default function StationLayer({ filters, metaOptions, onSelect, showLabel
           if (props.category && allowedCats.length > 0 && !allowedCats.includes(props.category)) return
 
           const [lng, lat] = feature.geometry.coordinates
-          const marker = L.marker([lat, lng], { icon: makeStationIcon(props.type, stationTypes) })
+          const marker = L.marker([lat, lng], { icon: makeStationIcon(props, metaOptions) })
 
           const tooltipContent = props.pipeline_name
             ? `${props.name}<br><small style="color:#8b949e">↳ ${props.pipeline_name}</small>`
