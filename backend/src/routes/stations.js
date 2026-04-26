@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
     const result = await pool.query(
-      `SELECT s.id, s.name, s.type, s.pipeline_id, s.description,
+      `SELECT s.id, s.name, s.type, s.category, s.status, s.pipeline_id, s.description,
               p.name as pipeline_name, p.color as pipeline_color,
               ST_AsGeoJSON(s.geometry)::json as geometry
        FROM stations s
@@ -51,6 +51,8 @@ router.get('/', async (req, res) => {
           id: row.id,
           name: row.name,
           type: row.type,
+          category: row.category,
+          status: row.status,
           pipeline_id: row.pipeline_id,
           pipeline_name: row.pipeline_name,
           pipeline_color: row.pipeline_color,
@@ -88,7 +90,7 @@ router.get('/search', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT s.id, s.name, s.type, s.pipeline_id, s.description, s.source, s.created_at,
+      `SELECT s.id, s.name, s.type, s.category, s.status, s.pipeline_id, s.description, s.source, s.created_at,
               p.name as pipeline_name,
               ST_AsGeoJSON(s.geometry)::json as geometry
        FROM stations s

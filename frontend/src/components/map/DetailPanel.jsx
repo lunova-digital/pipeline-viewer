@@ -112,6 +112,22 @@ export default function DetailPanel({ pipeline, station, onClose, onShare, onSha
               <span className="detail-val">{resolveStationType(data.type)}</span>
             </div>
 
+            {data.category && (
+              <div className="detail-row">
+                <span className="detail-key">Category</span>
+                <span className="detail-val">{resolveCategory(data.category)}</span>
+              </div>
+            )}
+
+            {data.status && (
+              <div className="detail-row">
+                <span className="detail-key">Status</span>
+                <span className="detail-badge" style={{ color: STATUS_COLORS[data.status] || 'inherit' }}>
+                  {resolveStatus(data.status)}
+                </span>
+              </div>
+            )}
+
             {data.pipeline_name && (
               <div className="detail-row">
                 <span className="detail-key">Pipeline</span>

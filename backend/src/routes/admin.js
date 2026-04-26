@@ -176,7 +176,7 @@ router.post('/pipelines/import-csv', upload.single('file'), async (req, res) => 
 router.get('/stations', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT s.id, s.name, s.type, s.pipeline_id, s.description, s.source, s.created_at,
+      `SELECT s.id, s.name, s.type, s.category, s.status, s.pipeline_id, s.description, s.source, s.created_at,
               p.name as pipeline_name,
               ST_X(s.geometry) as lng, ST_Y(s.geometry) as lat
        FROM stations s
@@ -192,7 +192,7 @@ router.get('/stations', async (req, res) => {
 
 router.post('/stations', async (req, res) => {
   try {
-    const { name, type, pipeline_id, description, lat, lng } = req.body
+    const { name, type, category, status, pipeline_id, description, lat, lng } = req.body
 
     if (!name?.trim()) return res.status(400).json({ error: 'name is required' })
     const latitude = parseFloat(lat)
@@ -202,11 +202,11 @@ router.post('/stations', async (req, res) => {
     if (longitude < -180 || longitude > 180) return res.status(400).json({ error: 'Longitude must be between -180 and 180' })
 
     const result = await pool.query(
-      `INSERT INTO stations (name, type, pipeline_id, description, geometry)
-       VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($5, $6), 4326))
-       RETURNING id, name, type, pipeline_id, description, created_at,
+      `INSERT INTO stations (name, type, category, status, pipeline_id, description, geometry)
+       VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326))
+       RETURNING id, name, type, category, status, pipeline_id, description, created_at,
                  ST_X(geometry) as lng, ST_Y(geometry) as lat`,
-      [name.trim(), type || 'compressor', pipeline_id || null, description || null, longitude, latitude]
+      [name.trim(), type || 'compressor', category || null, status || null, pipeline_id || null, description || null, longitude, latitude]
     )
 
     res.status(201).json(result.rows[0])
@@ -218,13 +218,15 @@ router.post('/stations', async (req, res) => {
 
 router.patch('/stations/:id', async (req, res) => {
   try {
-    const { name, type, pipeline_id, description, lat, lng } = req.body
+    const { name, type, category, status, pipeline_id, description, lat, lng } = req.body
     const sets = []
     const params = []
     let idx = 1
 
     if (name !== undefined) { sets.push(`name = $${idx++}`); params.push(name) }
     if (type !== undefined) { sets.push(`type = $${idx++}`); params.push(type) }
+    if (category !== undefined) { sets.push(`category = $${idx++}`); params.push(category || null) }
+    if (status !== undefined) { sets.push(`status = $${idx++}`); params.push(status || null) }
     if (pipeline_id !== undefined) { sets.push(`pipeline_id = $${idx++}`); params.push(pipeline_id || null) }
     if (description !== undefined) { sets.push(`description = $${idx++}`); params.push(description) }
 
@@ -244,7 +246,7 @@ router.patch('/stations/:id', async (req, res) => {
     params.push(req.params.id)
 
     const result = await pool.query(
-      `UPDATE stations SET ${sets.join(', ')} WHERE id = $${idx} RETURNING id, name, type, pipeline_id, description, updated_at, ST_X(geometry) as lng, ST_Y(geometry) as lat`,
+      `UPDATE stations SET ${sets.join(', ')} WHERE id = $${idx} RETURNING id, name, type, category, status, pipeline_id, description, updated_at, ST_X(geometry) as lng, ST_Y(geometry) as lat`,
       params
     )
 

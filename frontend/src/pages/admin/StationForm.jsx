@@ -17,9 +17,9 @@ export default function StationForm() {
   const navigate = useNavigate()
   const isEdit = !!id
 
-  const [form, setForm] = useState({ name: '', type: 'compressor', pipeline_id: '', description: '', lat: '', lng: '' })
+  const [form, setForm] = useState({ name: '', type: 'compressor', category: '', status: '', pipeline_id: '', description: '', lat: '', lng: '' })
   const [pipelines, setPipelines] = useState([])
-  const [metaOptions, setMetaOptions] = useState({ station_types: [] })
+  const [metaOptions, setMetaOptions] = useState({ station_types: [], categories: [], statuses: [] })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -30,7 +30,9 @@ export default function StationForm() {
     api.get(`/stations/${id}`).then(r => {
       const s = r.data
       setForm({
-        name: s.name, type: s.type, pipeline_id: s.pipeline_id || '',
+        name: s.name, type: s.type,
+        category: s.category || '', status: s.status || '',
+        pipeline_id: s.pipeline_id || '',
         description: s.description || '',
         lat: String(s.geometry?.coordinates?.[1] ?? ''),
         lng: String(s.geometry?.coordinates?.[0] ?? '')
@@ -53,6 +55,8 @@ export default function StationForm() {
 
     const payload = {
       name: form.name, type: form.type,
+      category: form.category || null,
+      status: form.status || null,
       pipeline_id: form.pipeline_id || null,
       description: form.description,
       lat: form.lat, lng: form.lng
@@ -100,6 +104,23 @@ export default function StationForm() {
                 <select value={form.pipeline_id} onChange={set('pipeline_id')}>
                   <option value="">— None —</option>
                   {pipelines.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Category</label>
+                <select value={form.category} onChange={set('category')}>
+                  <option value="">— None —</option>
+                  {(metaOptions.categories || []).map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Status</label>
+                <select value={form.status} onChange={set('status')}>
+                  <option value="">— None —</option>
+                  {(metaOptions.statuses || []).map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                 </select>
               </div>
             </div>
