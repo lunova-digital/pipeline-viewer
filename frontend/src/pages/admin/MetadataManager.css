@@ -5,7 +5,7 @@
 
 .metadata-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-top: 20px;
 }
@@ -92,4 +92,62 @@
 
 .btn-danger-sm:hover {
   background: #f85149;
+}
+
+.site-settings-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.site-settings-card h2 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 6px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.settings-hint {
+  font-size: 13px;
+  color: #8b949e;
+  margin: 0 0 20px;
+}
+
+.hint-inline {
+  font-size: 12px;
+  color: #8b949e;
+  font-weight: normal;
+}
+
+.settings-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.settings-full-width {
+  grid-column: 1 / -1;
+}
+
+.settings-fields textarea {
+  width: 100%;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #e6edf3;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.settings-fields textarea:focus {
+  outline: none;
+  border-color: #58a6ff;
 }

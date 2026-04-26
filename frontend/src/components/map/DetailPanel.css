@@ -115,6 +115,16 @@
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.detail-color-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .detail-download {

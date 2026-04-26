@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { loadAdminKey, isAuthenticated } from './api/client'
+import { loadAdminKey, isAuthenticated, api } from './api/client'
 import PublicMap from './pages/PublicMap'
 import Login from './pages/admin/Login'
 import AdminLayout from './components/admin/AdminLayout'
@@ -11,12 +11,36 @@ import StationList from './pages/admin/StationList'
 import StationForm from './pages/admin/StationForm'
 import MetadataManager from './pages/admin/MetadataManager'
 
+function setMetaTag(attr, name, content) {
+  if (!content) return
+  let el = document.querySelector(`meta[${attr}="${name}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, name)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', content)
+}
+
 function PrivateRoute({ children }) {
   return isAuthenticated() ? children : <Navigate to="/admin/login" replace />
 }
 
 export default function App() {
-  useEffect(() => { loadAdminKey() }, [])
+  useEffect(() => {
+    loadAdminKey()
+    api.get('/meta/settings').then(res => {
+      const s = res.data
+      if (s.site_title) document.title = s.site_title
+      setMetaTag('name', 'description', s.site_description)
+      setMetaTag('property', 'og:title', s.site_title)
+      setMetaTag('property', 'og:description', s.site_description)
+      setMetaTag('property', 'og:image', s.og_image_url)
+      setMetaTag('name', 'twitter:title', s.site_title)
+      setMetaTag('name', 'twitter:description', s.site_description)
+      setMetaTag('name', 'twitter:image', s.og_image_url)
+    }).catch(() => {})
+  }, [])
 
   return (
     <BrowserRouter>

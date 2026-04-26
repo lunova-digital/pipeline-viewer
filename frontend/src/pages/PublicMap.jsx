@@ -60,8 +60,8 @@ export default function PublicMap() {
   // Persist label toggle to localStorage
   const [showLabels, setShowLabels] = useState(() => readStorage('map_labels', 'false') === 'true')
 
-  const [metaOptions, setMetaOptions] = useState({ categories: [], statuses: [] })
-  const [filters, setFilters] = useState({ categories: [], statuses: [] })
+  const [metaOptions, setMetaOptions] = useState({ categories: [], statuses: [], station_types: [] })
+  const [filters, setFilters] = useState({ categories: [], statuses: [], station_types: [] })
   const [selectedPipeline, setSelectedPipeline] = useState(null)
   const [selectedStation, setSelectedStation] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
@@ -74,7 +74,8 @@ export default function PublicMap() {
         // Default to all checked
         setFilters({
           categories: data.categories.map(c => c.id),
-          statuses: data.statuses.map(s => s.id)
+          statuses: data.statuses.map(s => s.id),
+          station_types: data.station_types ? data.station_types.map(t => t.id) : []
         })
       })
       .catch(err => console.error('Failed to fetch meta options:', err))
@@ -138,7 +139,7 @@ export default function PublicMap() {
         <MapController onReady={setMapInstance} />
         <TileLayer key={activeLayer} url={tile.url} attribution={tile.attribution} maxZoom={tile.maxZoom} />
         <PipelineLayer filters={filters} onSelect={handlePipelineClick} showLabels={showLabels} />
-        <StationLayer onSelect={handleStationClick} showLabels={showLabels} />
+        <StationLayer filters={filters} metaOptions={metaOptions} onSelect={handleStationClick} showLabels={showLabels} />
       </MapContainer>
     </div>
   )

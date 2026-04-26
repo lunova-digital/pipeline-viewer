@@ -5,32 +5,27 @@ import 'leaflet.markercluster'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
 
-const STATION_CONFIG = {
-  compressor:  { color: '#FF6600', letter: 'C' },
-  terminal:    { color: '#0099FF', letter: 'T' },
-  valve:       { color: '#00BB44', letter: 'V' },
-  metering:    { color: '#AA00FF', letter: 'M' },
-  other:       { color: '#888888', letter: 'O' }
-}
-
-function makeStationIcon(type) {
-  const cfg = STATION_CONFIG[type] || STATION_CONFIG.other
+function makeStationIcon(typeId, metaTypes) {
+  const metaType = metaTypes.find(t => t.id === typeId)
+  const color = metaType ? metaType.color : '#888888'
+  const letter = metaType && metaType.label ? metaType.label.charAt(0).toUpperCase() : 'O'
+  
   return L.divIcon({
     className: '',
     html: `<div style="
       width:28px;height:28px;border-radius:50%;
-      background:${cfg.color};border:2px solid rgba(255,255,255,0.8);
+      background:${color};border:2px solid rgba(255,255,255,0.8);
       display:flex;align-items:center;justify-content:center;
       font-size:11px;font-weight:700;color:#fff;
       box-shadow:0 2px 6px rgba(0,0,0,0.5);
-    ">${cfg.letter}</div>`,
+    ">${letter}</div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
     tooltipAnchor: [0, -14]
   })
 }
 
-export default function StationLayer({ onSelect, showLabels }) {
+export default function StationLayer({ filters, metaOptions, onSelect, showLabels }) {
   const map = useMap()
   const clusterRef = useRef(null)
   const markersRef = useRef([])
@@ -76,10 +71,17 @@ export default function StationLayer({ onSelect, showLabels }) {
         clusterRef.current.clearLayers()
         markersRef.current = []
 
+        const allowedTypes = filters?.station_types || []
+        const stationTypes = metaOptions?.station_types || []
+
         data.features?.forEach(feature => {
-          const [lng, lat] = feature.geometry.coordinates
           const props = feature.properties
-          const marker = L.marker([lat, lng], { icon: makeStationIcon(props.type) })
+          if (allowedTypes.length > 0 && !allowedTypes.includes(props.type)) {
+            return
+          }
+
+          const [lng, lat] = feature.geometry.coordinates
+          const marker = L.marker([lat, lng], { icon: makeStationIcon(props.type, stationTypes) })
 
           const tooltipContent = props.pipeline_name
             ? `${props.name}<br><small style="color:#8b949e">↳ ${props.pipeline_name}</small>`
@@ -103,7 +105,7 @@ export default function StationLayer({ onSelect, showLabels }) {
     // Wait for cluster to be ready
     const timer = setTimeout(fetchAndRender, 0)
     return () => clearTimeout(timer)
-  }, [map]) // eslint-disable-line
+  }, [map, filters, metaOptions]) // Re-run when filters or metaOptions change
 
   return null
 }

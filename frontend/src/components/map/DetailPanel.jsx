@@ -92,7 +92,8 @@ export default function DetailPanel({ pipeline, station, onClose }) {
             {data.pipeline_name && (
               <div className="detail-row">
                 <span className="detail-key">Pipeline</span>
-                <span className="detail-val" style={{ color: data.pipeline_color || 'inherit' }}>
+                <span className="detail-val">
+                  <span className="detail-color-dot" style={{ background: data.pipeline_color || '#888' }} />
                   {data.pipeline_name}
                 </span>
               </div>
