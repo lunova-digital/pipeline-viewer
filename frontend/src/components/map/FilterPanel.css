@@ -39,6 +39,8 @@
 .filter-body {
   padding: 8px 14px 14px;
   border-top: 1px solid var(--border);
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .filter-section {
@@ -67,6 +69,12 @@
   font-size: 12px;
   color: var(--text-primary);
   user-select: none;
+}
+
+@media (max-width: 640px) {
+  .filter-panel { bottom: 16px; }
+  .check-item { padding: 6px 0; min-height: 36px; }
+  .filter-body { max-height: 40vh; }
 }
 
 .check-item input[type="checkbox"] {

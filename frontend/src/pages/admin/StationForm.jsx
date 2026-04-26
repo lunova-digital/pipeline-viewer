@@ -3,8 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import { api } from '../../api/client'
 
-const TYPES = ['compressor', 'terminal', 'valve', 'metering', 'other']
-
+const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
 function ClickMarker({ lat, lng, onChange }) {
   useMapEvents({
     click(e) { onChange(e.latlng.lat, e.latlng.lng) }
@@ -20,11 +19,13 @@ export default function StationForm() {
 
   const [form, setForm] = useState({ name: '', type: 'compressor', pipeline_id: '', description: '', lat: '', lng: '' })
   const [pipelines, setPipelines] = useState([])
+  const [metaOptions, setMetaOptions] = useState({ station_types: [] })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     api.get('/admin/pipelines').then(r => setPipelines(r.data))
+    api.get('/meta').then(r => setMetaOptions(r.data))
     if (!isEdit) return
     api.get(`/stations/${id}`).then(r => {
       const s = r.data
@@ -91,7 +92,7 @@ export default function StationForm() {
               <div className="form-group">
                 <label>Type</label>
                 <select value={form.type} onChange={set('type')}>
-                  {TYPES.map(t => <option key={t} value={t} style={{ textTransform: 'capitalize' }}>{t}</option>)}
+                  {(metaOptions.station_types || []).map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                 </select>
               </div>
               <div className="form-group">

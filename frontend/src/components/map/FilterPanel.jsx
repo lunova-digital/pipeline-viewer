@@ -2,8 +2,8 @@ import { useState } from 'react'
 import './FilterPanel.css'
 
 export default function FilterPanel({ filters, onChange, metaOptions }) {
-  const { categories = [], statuses = [] } = metaOptions || {}
-  const [open, setOpen] = useState(true)
+  const { categories = [], statuses = [], station_types = [] } = metaOptions || {}
+  const [open, setOpen] = useState(() => window.innerWidth > 640)
 
   function toggleCategory(id) {
     const cats = filters.categories.includes(id)
@@ -17,6 +17,13 @@ export default function FilterPanel({ filters, onChange, metaOptions }) {
       ? filters.statuses.filter(s => s !== id)
       : [...filters.statuses, id]
     onChange({ ...filters, statuses })
+  }
+
+  function toggleStationType(id) {
+    const types = filters.station_types.includes(id)
+      ? filters.station_types.filter(t => t !== id)
+      : [...filters.station_types, id]
+    onChange({ ...filters, station_types: types })
   }
 
   return (
@@ -53,6 +60,21 @@ export default function FilterPanel({ filters, onChange, metaOptions }) {
                   onChange={() => toggleStatus(s.id)}
                 />
                 {s.label}
+              </label>
+            ))}
+          </div>
+
+          <div className="filter-section">
+            <p className="filter-label">Station Type</p>
+            {station_types.map(t => (
+              <label key={t.id} className="check-item">
+                <input
+                  type="checkbox"
+                  checked={filters.station_types?.includes(t.id) ?? false}
+                  onChange={() => toggleStationType(t.id)}
+                />
+                <span className="check-dot" style={{ background: t.color, borderRadius: '50%' }} />
+                {t.label}
               </label>
             ))}
           </div>

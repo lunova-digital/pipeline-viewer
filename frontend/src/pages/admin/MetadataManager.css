@@ -5,7 +5,7 @@
 
 .metadata-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-top: 20px;
 }
@@ -92,4 +92,136 @@
 
 .btn-danger-sm:hover {
   background: #f85149;
+}
+
+.btn-edit-sm {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-solid);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-edit-sm:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.meta-item-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.meta-item-editing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #0d1117;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+}
+
+.meta-edit-input {
+  flex: 1;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-solid);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  font-size: 13px;
+  min-width: 0;
+  min-height: 32px;
+}
+
+.meta-edit-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.meta-edit-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.meta-edit-fields {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-edit-id {
+  width: 90px;
+  flex: 0 0 90px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.site-settings-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.site-settings-card h2 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 6px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.settings-hint {
+  font-size: 13px;
+  color: #8b949e;
+  margin: 0 0 20px;
+}
+
+.hint-inline {
+  font-size: 12px;
+  color: #8b949e;
+  font-weight: normal;
+}
+
+.settings-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .settings-fields { grid-template-columns: 1fr; }
+  .metadata-grid { grid-template-columns: 1fr; }
+}
+
+.settings-full-width {
+  grid-column: 1 / -1;
+}
+
+.settings-fields textarea {
+  width: 100%;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #e6edf3;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.settings-fields textarea:focus {
+  outline: none;
+  border-color: #58a6ff;
 }
