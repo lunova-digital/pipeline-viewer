@@ -19,6 +19,23 @@ router.post('/categories', async (req, res) => {
   }
 })
 
+// PUT /api/v1/admin/meta/categories/:id
+router.put('/categories/:id', async (req, res) => {
+  try {
+    const { label, color } = req.body
+    if (!label || !color) return res.status(400).json({ error: 'Missing label or color' })
+    const result = await pool.query(
+      'UPDATE categories SET label = $1, color = $2 WHERE id = $3 RETURNING id',
+      [label, color, req.params.id]
+    )
+    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
+    res.json({ success: true })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 // DELETE /api/v1/admin/meta/categories/:id
 router.delete('/categories/:id', async (req, res) => {
   try {
@@ -47,6 +64,23 @@ router.post('/statuses', async (req, res) => {
   }
 })
 
+// PUT /api/v1/admin/meta/statuses/:id
+router.put('/statuses/:id', async (req, res) => {
+  try {
+    const { label } = req.body
+    if (!label) return res.status(400).json({ error: 'Missing label' })
+    const result = await pool.query(
+      'UPDATE statuses SET label = $1 WHERE id = $2 RETURNING id',
+      [label, req.params.id]
+    )
+    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
+    res.json({ success: true })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 // DELETE /api/v1/admin/meta/statuses/:id
 router.delete('/statuses/:id', async (req, res) => {
   try {
@@ -70,6 +104,23 @@ router.post('/station_types', async (req, res) => {
     res.json({ success: true })
   } catch (err) {
     if (err.code === '23505') return res.status(400).json({ error: 'Station Type ID already exists' })
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+// PUT /api/v1/admin/meta/station_types/:id
+router.put('/station_types/:id', async (req, res) => {
+  try {
+    const { label, color } = req.body
+    if (!label || !color) return res.status(400).json({ error: 'Missing label or color' })
+    const result = await pool.query(
+      'UPDATE station_types SET label = $1, color = $2 WHERE id = $3 RETURNING id',
+      [label, color, req.params.id]
+    )
+    if (!result.rows.length) return res.status(404).json({ error: 'Not found' })
+    res.json({ success: true })
+  } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
   }

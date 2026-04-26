@@ -15,7 +15,7 @@ const STATION_TYPES = {
   other: 'Other'
 }
 
-export default function DetailPanel({ pipeline, station, onClose }) {
+export default function DetailPanel({ pipeline, station, onClose, onShare }) {
   const data = pipeline || station
   if (!data) return null
 
@@ -33,7 +33,17 @@ export default function DetailPanel({ pipeline, station, onClose }) {
           <div className="detail-type">{isPipeline ? 'Pipeline' : STATION_TYPES[data.type] || 'Station'}</div>
           <h2 className="detail-name">{data.name}</h2>
         </div>
-        <button className="detail-close" onClick={onClose} title="Close">✕</button>
+        <div className="detail-header-actions">
+          {onShare && (
+            <button className="detail-share" onClick={onShare} title="Copy share link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </button>
+          )}
+          <button className="detail-close" onClick={onClose} title="Close">✕</button>
+        </div>
       </div>
 
       <div className="detail-body">

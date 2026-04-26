@@ -94,6 +94,60 @@
   background: #f85149;
 }
 
+.btn-edit-sm {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-solid);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-edit-sm:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.meta-item-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.meta-item-editing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #0d1117;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+}
+
+.meta-edit-input {
+  flex: 1;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-solid);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  font-size: 13px;
+  min-width: 0;
+  min-height: 32px;
+}
+
+.meta-edit-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.meta-edit-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .site-settings-card {
   background: #161b22;
   border: 1px solid #30363d;
