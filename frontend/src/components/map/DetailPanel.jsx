@@ -13,9 +13,10 @@ export default function DetailPanel({ pipeline, station, onClose, onShare, onSha
 
   const isPipeline = !!pipeline
 
-  const stationTypes  = metaOptions?.station_types || []
-  const statuses      = metaOptions?.statuses      || []
-  const categories    = metaOptions?.categories    || []
+  const stationTypes      = metaOptions?.station_types      || []
+  const statuses          = metaOptions?.statuses           || []
+  const categories        = metaOptions?.categories         || []
+  const stationCategories = metaOptions?.station_categories || []
 
   function resolveStationType(id) {
     const found = stationTypes.find(t => t.id === id)
@@ -115,7 +116,9 @@ export default function DetailPanel({ pipeline, station, onClose, onShare, onSha
             {data.category && (
               <div className="detail-row">
                 <span className="detail-key">Category</span>
-                <span className="detail-val">{resolveCategory(data.category)}</span>
+                <span className="detail-val">
+                  {(() => { const sc = stationCategories.find(c => c.id === data.category); return sc ? sc.label : data.category })()}
+                </span>
               </div>
             )}
 

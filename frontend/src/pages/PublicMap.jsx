@@ -72,8 +72,8 @@ export default function PublicMap() {
     return saved in TILES ? saved : 'dark'
   })
   const [showLabels, setShowLabels] = useState(() => readStorage('map_labels', 'false') === 'true')
-  const [metaOptions, setMetaOptions] = useState({ categories: [], statuses: [], station_types: [] })
-  const [filters, setFilters] = useState({ categories: [], statuses: [], station_types: [] })
+  const [metaOptions, setMetaOptions] = useState({ categories: [], statuses: [], station_types: [], station_categories: [] })
+  const [filters, setFilters] = useState({ categories: [], statuses: [], station_types: [], station_categories: [] })
   const [selectedPipeline, setSelectedPipeline] = useState(null)
   const [selectedStation, setSelectedStation] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
@@ -99,9 +99,10 @@ export default function PublicMap() {
           // Only reset filters on first load (when they're still empty)
           if (prev.categories.length > 0) return prev
           return {
-            categories:    data.categories.map(c => c.id),
-            statuses:      data.statuses.map(s => s.id),
-            station_types: data.station_types ? data.station_types.map(t => t.id) : []
+            categories:         data.categories.map(c => c.id),
+            statuses:           data.statuses.map(s => s.id),
+            station_types:      data.station_types ? data.station_types.map(t => t.id) : [],
+            station_categories: data.station_categories ? data.station_categories.map(c => c.id) : [],
           }
         })
         return data

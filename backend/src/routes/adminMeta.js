@@ -173,6 +173,60 @@ router.delete('/station_types/:id', async (req, res) => {
   }
 })
 
+// POST /api/v1/admin/meta/station_categories
+router.post('/station_categories', async (req, res) => {
+  try {
+    const { id, label, color } = req.body
+    if (!id || !label || !color) return res.status(400).json({ error: 'Missing required fields' })
+    await pool.query('INSERT INTO station_categories (id, label, color) VALUES ($1, $2, $3)', [id, label, color])
+    res.json({ success: true })
+  } catch (err) {
+    if (err.code === '23505') return res.status(400).json({ error: 'ID already exists' })
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+// PUT /api/v1/admin/meta/station_categories/:id
+router.put('/station_categories/:id', async (req, res) => {
+  const client = await pool.connect()
+  try {
+    const oldId = req.params.id
+    const { id: newId = oldId, label, color } = req.body
+    if (!newId || !label || !color) return res.status(400).json({ error: 'Missing required fields' })
+
+    await client.query('BEGIN')
+    if (newId !== oldId) {
+      await client.query('UPDATE stations SET category = $1 WHERE category = $2', [newId, oldId])
+    }
+    const result = await client.query(
+      'UPDATE station_categories SET id = $1, label = $2, color = $3 WHERE id = $4 RETURNING id',
+      [newId, label, color, oldId]
+    )
+    if (!result.rows.length) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Not found' }) }
+    await client.query('COMMIT')
+    res.json({ success: true, id: newId })
+  } catch (err) {
+    await client.query('ROLLBACK')
+    if (err.code === '23505') return res.status(400).json({ error: 'ID already exists' })
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    client.release()
+  }
+})
+
+// DELETE /api/v1/admin/meta/station_categories/:id
+router.delete('/station_categories/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM station_categories WHERE id = $1', [req.params.id])
+    res.json({ success: true })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 // GET /api/v1/admin/meta/settings
 router.get('/settings', async (req, res) => {
   try {

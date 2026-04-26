@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
 }
 
 export default function MetadataManager() {
-  const [meta, setMeta] = useState({ categories: [], statuses: [], station_types: [] })
+  const [meta, setMeta] = useState({ categories: [], statuses: [], station_types: [], station_categories: [] })
   const [loading, setLoading] = useState(true)
 
   // Site settings
@@ -18,9 +18,10 @@ export default function MetadataManager() {
   const [settingsSaving, setSettingsSaving] = useState(false)
 
   // Inline editing state
-  const [editingCat, setEditingCat]   = useState(null) // { id, label, color }
-  const [editingStat, setEditingStat] = useState(null) // { id, label }
-  const [editingType, setEditingType] = useState(null) // { id, label, color }
+  const [editingCat,      setEditingCat]      = useState(null) // { id, newId, label, color }
+  const [editingStat,     setEditingStat]      = useState(null) // { id, newId, label }
+  const [editingType,     setEditingType]      = useState(null) // { id, newId, label, color }
+  const [editingStaCat,   setEditingStaCat]    = useState(null) // { id, newId, label, color }
 
   // Add form state — categories
   const [catId, setCatId]     = useState('')
@@ -35,6 +36,11 @@ export default function MetadataManager() {
   const [typeId, setTypeId]     = useState('')
   const [typeLabel, setTypeLabel] = useState('')
   const [typeColor, setTypeColor] = useState('#FF6600')
+
+  // Add form state — station categories
+  const [staCatId, setStaCatId]       = useState('')
+  const [staCatLabel, setStaCatLabel] = useState('')
+  const [staCatColor, setStaCatColor] = useState('#FF9900')
 
   useEffect(() => { fetchMeta(); fetchSettings() }, [])
 
@@ -151,6 +157,37 @@ export default function MetadataManager() {
       await api.delete(`/admin/meta/station_types/${id}`)
       fetchMeta()
     } catch { alert('Failed to delete station type') }
+  }
+
+  // ── Station categories ───────────────────────────
+  async function handleAddStationCategory(e) {
+    e.preventDefault()
+    if (!staCatId || !staCatLabel || !staCatColor) return
+    try {
+      await api.post('/admin/meta/station_categories', { id: staCatId, label: staCatLabel, color: staCatColor })
+      setStaCatId(''); setStaCatLabel('')
+      fetchMeta()
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to add station category')
+    }
+  }
+
+  async function handleSaveStationCategory(id) {
+    try {
+      await api.put(`/admin/meta/station_categories/${id}`, { id: editingStaCat.newId, label: editingStaCat.label, color: editingStaCat.color })
+      setEditingStaCat(null)
+      fetchMeta()
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to save')
+    }
+  }
+
+  async function handleDeleteStationCategory(id) {
+    if (!window.confirm('Delete this station category?')) return
+    try {
+      await api.delete(`/admin/meta/station_categories/${id}`)
+      fetchMeta()
+    } catch { alert('Failed to delete station category') }
   }
 
   if (loading) return <div className="loading">Loading...</div>
@@ -359,6 +396,64 @@ export default function MetadataManager() {
               )
             ))}
             {(!meta.station_types || meta.station_types.length === 0) && <p className="empty-state">No station types</p>}
+          </div>
+        </div>
+
+        {/* Station Categories */}
+        <div className="meta-card">
+          <h2>Station Categories</h2>
+          <form className="meta-form" onSubmit={handleAddStationCategory}>
+            <div className="form-group">
+              <label>ID (e.g. 'hydro')</label>
+              <input type="text" value={staCatId} onChange={e => setStaCatId(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label>Label</label>
+              <input type="text" value={staCatLabel} onChange={e => setStaCatLabel(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label>Color</label>
+              <input type="color" value={staCatColor} onChange={e => setStaCatColor(e.target.value)}
+                style={{ padding: 2, height: 38, width: 48, cursor: 'pointer' }} required />
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ height: 38 }}>Add</button>
+          </form>
+
+          <div className="meta-list">
+            {(meta.station_categories || []).map(c => (
+              editingStaCat?.id === c.id ? (
+                <div key={c.id} className="meta-item meta-item-editing">
+                  <div className="meta-edit-fields">
+                    <input className="meta-edit-input meta-edit-id" value={editingStaCat.newId} placeholder="id"
+                      onChange={e => setEditingStaCat(v => ({ ...v, newId: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingStaCat(null)} />
+                    <input className="meta-edit-input" value={editingStaCat.label} placeholder="Label" autoFocus
+                      onChange={e => setEditingStaCat(v => ({ ...v, label: e.target.value }))}
+                      onKeyDown={e => e.key === 'Escape' && setEditingStaCat(null)} />
+                  </div>
+                  <input type="color" value={editingStaCat.color}
+                    onChange={e => setEditingStaCat(v => ({ ...v, color: e.target.value }))}
+                    style={{ width: 36, height: 36, padding: 2, cursor: 'pointer', border: '1px solid var(--border-solid)', borderRadius: 4, background: 'none', flexShrink: 0 }} />
+                  <div className="meta-edit-actions">
+                    <button className="btn btn-primary btn-sm" onClick={() => handleSaveStationCategory(c.id)}>Save</button>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setEditingStaCat(null)}>✕</button>
+                  </div>
+                </div>
+              ) : (
+                <div key={c.id} className="meta-item">
+                  <div className="meta-item-info">
+                    <span className="color-dot" style={{ background: c.color }} />
+                    <span>{c.label}</span>
+                    <span className="meta-item-id">{c.id}</span>
+                  </div>
+                  <div className="meta-item-actions">
+                    <button className="btn-edit-sm" onClick={() => setEditingStaCat({ id: c.id, newId: c.id, label: c.label, color: c.color })}>Edit</button>
+                    <button className="btn-danger-sm" onClick={() => handleDeleteStationCategory(c.id)}>Delete</button>
+                  </div>
+                </div>
+              )
+            ))}
+            {(!meta.station_categories || meta.station_categories.length === 0) && <p className="empty-state">No station categories</p>}
           </div>
         </div>
 

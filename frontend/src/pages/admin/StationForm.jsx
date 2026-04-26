@@ -19,7 +19,7 @@ export default function StationForm() {
 
   const [form, setForm] = useState({ name: '', type: 'compressor', category: '', status: '', pipeline_id: '', description: '', lat: '', lng: '' })
   const [pipelines, setPipelines] = useState([])
-  const [metaOptions, setMetaOptions] = useState({ station_types: [], categories: [], statuses: [] })
+  const [metaOptions, setMetaOptions] = useState({ station_types: [], station_categories: [], statuses: [] })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -113,7 +113,7 @@ export default function StationForm() {
                 <label>Category</label>
                 <select value={form.category} onChange={set('category')}>
                   <option value="">— None —</option>
-                  {(metaOptions.categories || []).map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                  {(metaOptions.station_categories || []).map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
                 </select>
               </div>
               <div className="form-group">

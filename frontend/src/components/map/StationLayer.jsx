@@ -72,13 +72,14 @@ export default function StationLayer({ filters, metaOptions, onSelect, showLabel
         markersRef.current = []
 
         const allowedTypes = filters?.station_types || []
+        const allowedCats  = filters?.station_categories || []
         const stationTypes = metaOptions?.station_types || []
 
         data.features?.forEach(feature => {
           const props = feature.properties
-          if (allowedTypes.length > 0 && !allowedTypes.includes(props.type)) {
-            return
-          }
+          if (allowedTypes.length > 0 && !allowedTypes.includes(props.type)) return
+          // Only filter by category when the station has one set
+          if (props.category && allowedCats.length > 0 && !allowedCats.includes(props.category)) return
 
           const [lng, lat] = feature.geometry.coordinates
           const marker = L.marker([lat, lng], { icon: makeStationIcon(props.type, stationTypes) })
