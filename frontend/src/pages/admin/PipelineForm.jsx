@@ -55,7 +55,7 @@ export default function PipelineForm() {
     if (!isEdit) return
     api.get(`/pipelines/${id}`).then(r => {
       const p = r.data
-      const coords = p.geometry?.coordinates?.map(([lng, lat]) => `${lng},${lat}`).join('\n') || ''
+      const coords = p.geometry?.coordinates?.map(([lng, lat]) => `${lat},${lng}`).join('\n') || ''
       setForm({
         name: p.name, color: p.color, category: p.category, status: p.status,
         countries: p.countries?.join(', ') || '',

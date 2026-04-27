@@ -1,4 +1,13 @@
+import { useState } from 'react'
 import './DetailPanel.css'
+
+function copyText(text) {
+  if (navigator.clipboard) return navigator.clipboard.writeText(text)
+  const el = document.createElement('textarea')
+  el.value = text; document.body.appendChild(el); el.select()
+  document.execCommand('copy'); document.body.removeChild(el)
+  return Promise.resolve()
+}
 
 const STATUS_COLORS = {
   operational:       '#3fb950',
@@ -8,10 +17,20 @@ const STATUS_COLORS = {
 }
 
 export default function DetailPanel({ pipeline, station, onClose, onShare, onSharePoint, metaOptions }) {
+  const [copied, setCopied] = useState(false)
   const data = pipeline || station
   if (!data) return null
 
   const isPipeline = !!pipeline
+
+  function handleCopyCoord() {
+    if (!data._clickedAt) return
+    const text = `${data._clickedAt.lat.toFixed(6)}, ${data._clickedAt.lng.toFixed(6)}`
+    copyText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   const stationTypes      = metaOptions?.station_types      || []
   const statuses          = metaOptions?.statuses           || []
@@ -161,13 +180,25 @@ export default function DetailPanel({ pipeline, station, onClose, onShare, onSha
               <span className="detail-coord-value">
                 {data._clickedAt.lat.toFixed(6)}, {data._clickedAt.lng.toFixed(6)}
               </span>
-              <button className="detail-coord-share-btn" onClick={onSharePoint} title="Share this point">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                </svg>
-                Share point
-              </button>
+              <div className="detail-coord-actions">
+                <button className="detail-coord-copy-btn" onClick={handleCopyCoord} title="Copy coordinates">
+                  {copied ? 'Copied!' : (
+                    <>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                      </svg>
+                      Copy
+                    </>
+                  )}
+                </button>
+                <button className="detail-coord-share-btn" onClick={onSharePoint} title="Share this point">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                  </svg>
+                  Share
+                </button>
+              </div>
             </div>
           </div>
         )}
