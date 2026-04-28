@@ -5,7 +5,6 @@ import PipelineLayer from '../components/map/PipelineLayer'
 import StationLayer from '../components/map/StationLayer'
 import FilterPanel from '../components/map/FilterPanel'
 import DetailPanel from '../components/map/DetailPanel'
-import Legend from '../components/map/Legend'
 import SearchBar from '../components/map/SearchBar'
 import LabelToggle from '../components/map/LabelToggle'
 import CoordinatePopup from '../components/map/CoordinatePopup'
@@ -234,7 +233,6 @@ export default function PublicMap() {
       </div>
 
       <FilterPanel filters={filters} onChange={setFilters} metaOptions={metaOptions} />
-      <Legend />
 
       {(selectedPipeline || selectedStation) && (
         <DetailPanel
